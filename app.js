@@ -119,6 +119,55 @@ const states = {
 
 let latestResearchContext = null;
 let activeModel = "local model";
+let demoMode = null;
+let brainCheckPromise;
+
+const demoScenarios = [
+  {
+    matches: /momentum|no[- ]ticket|simple fix|self[- ]service/i,
+    classification: "Self-service candidate",
+    confidence: "84%",
+    summary: "Simulated Momentum history shows that this low-risk action has been completed successfully without a ticket when the same permissions and conditions apply.",
+    recommendations: [
+      "Confirm the user has the approved role and the same conditions shown in the operational log.",
+      "Use the documented self-service steps instead of opening a ticket when every safeguard matches.",
+      "Create a ticket if permissions, symptoms, or the expected result differ from the approved pattern.",
+    ],
+  },
+  {
+    matches: /duplicate|already|incoming/i,
+    classification: "Likely duplicate",
+    confidence: "76%",
+    summary: "Simulated Jira history contains a closely related open issue with overlapping symptoms and component details.",
+    recommendations: [
+      "Compare the affected version and reproduction steps with the existing issue.",
+      "Link or route the incoming request to the existing work if the details match.",
+      "Open separate work only when the evidence shows a different cause or impact.",
+    ],
+  },
+  {
+    matches: /document|runbook|confluence|instructions/i,
+    classification: "Undocumented gap",
+    confidence: "69%",
+    summary: "Simulated results show a repeatable resolution in operational history but no matching published runbook.",
+    recommendations: [
+      "Validate the resolution with the owning team before wider reuse.",
+      "Draft a runbook with prerequisites, steps, expected results, and escalation conditions.",
+      "Track documentation work if the fix is being repeated across teams.",
+    ],
+  },
+  {
+    matches: /payment|release|error|timeout|failed|version/i,
+    classification: "Known issue",
+    confidence: "82%",
+    summary: "Simulated Jira and release-note evidence indicates a known issue with an available workaround and a version-specific fix.",
+    recommendations: [
+      "Confirm the affected version and error pattern before applying the workaround.",
+      "Use the approved workaround while planning the documented upgrade or patch.",
+      "Escalate if the symptom remains after the expected fix is present.",
+    ],
+  },
+];
 
 function renderCards(targetId, items) {
   const target = document.getElementById(targetId);
@@ -162,6 +211,56 @@ function setBrainStatus(state, text) {
   document.getElementById("brain-status-text").textContent = text;
 }
 
+function enableDemoMode() {
+  demoMode = true;
+  activeModel = "simulated demo";
+  document.getElementById("brain-status-label").textContent = "Online Demo";
+  document.getElementById("demo-disclosure").hidden = false;
+  setBrainStatus("demo", "Simulated research - safe for public demonstration");
+}
+
+function getDemoResearchResult(query) {
+  return demoScenarios.find((scenario) => scenario.matches.test(query)) || {
+    classification: "Needs investigation",
+    confidence: "58%",
+    summary: "The simulated evidence contains partial matches, but it is not strong enough to recommend avoiding or closing a ticket.",
+    recommendations: [
+      "Collect the affected version, exact symptom, timing, and reproduction details.",
+      "Review the closest Jira, documentation, release, and Momentum matches with an analyst.",
+      "Create or route a ticket when the issue cannot be safely resolved from approved history.",
+    ],
+  };
+}
+
+function showResearchResult(result, query, selectedLabels, sourceList, isDemo) {
+  latestResearchContext = {
+    query,
+    sources: selectedLabels,
+    classification: result.classification,
+    confidence: result.confidence,
+    summary: result.summary,
+    recommendations: result.recommendations,
+    evidenceMode: isDemo ? "online-demo" : result.evidenceMode,
+  };
+
+  document.getElementById("classification").textContent = result.classification;
+  document.getElementById("confidence").textContent = result.confidence;
+  document.getElementById("summary").textContent = result.summary;
+  document.getElementById("recommendation-list").replaceChildren(
+    ...result.recommendations.map((text) => {
+      const item = document.createElement("li");
+      item.textContent = text;
+      return item;
+    }),
+  );
+
+  const resultState = result.classification === "Needs investigation" ? "empty" : "results";
+  setState(resultState);
+  document.getElementById("state-message").textContent = isDemo
+    ? `Simulated analysis of demo evidence from ${sourceList} is ready for review.`
+    : `Local-AI analysis of prototype evidence from ${sourceList} is ready for review.`;
+}
+
 async function requestJson(url, body) {
   const response = await fetch(url, {
     method: body ? "POST" : "GET",
@@ -178,13 +277,17 @@ async function checkBrain() {
     const health = await requestJson("/api/health");
     activeModel = health.model || "local model";
     if (!health.ready) throw new Error(`${activeModel} is not available in Ollama.`);
-    setBrainStatus("ready", `Ready — ${activeModel} through ${health.provider}`);
-  } catch (error) {
-    setBrainStatus("error", error.message || "The local AI service is unavailable.");
+    demoMode = false;
+    document.getElementById("brain-status-label").textContent = "Local AI";
+    document.getElementById("demo-disclosure").hidden = true;
+    setBrainStatus("ready", `Ready - ${activeModel} through ${health.provider}`);
+  } catch {
+    enableDemoMode();
   }
 }
 
 async function runResearch(query) {
+  if (demoMode === null) await brainCheckPromise;
   const trimmedQuery = query.trim();
   const selectedSources = Array.from(
     document.querySelectorAll('input[name="source"]:checked'),
@@ -228,49 +331,31 @@ async function runResearch(query) {
 
   setState("searching");
   document.getElementById("state-title").textContent = `ECHO is checking ${sourceList}.`;
-  document.getElementById("state-message").textContent =
-    `The local AI is analyzing prototype evidence from ${sourceList}.`;
+  document.getElementById("state-message").textContent = demoMode
+    ? `The online demo is analyzing simulated evidence from ${sourceList}.`
+    : `The local AI is analyzing prototype evidence from ${sourceList}.`;
   document.getElementById("bot-speech").textContent = `Thinking with ${activeModel}...`;
-  setBrainStatus("thinking", `Analyzing with ${activeModel}...`);
+  setBrainStatus("thinking", demoMode ? "Analyzing simulated evidence..." : `Analyzing with ${activeModel}...`);
 
   const submitButton = document.querySelector('#research-form button[type="submit"]');
   submitButton.disabled = true;
 
   try {
+    if (demoMode) {
+      await new Promise((resolve) => window.setTimeout(resolve, 450));
+      const result = getDemoResearchResult(trimmedQuery);
+      showResearchResult(result, trimmedQuery, selectedLabels, sourceList, true);
+      setBrainStatus("demo", "Simulated result - no live company data used");
+      return;
+    }
+
     const result = await requestJson("/api/research", {
       query: trimmedQuery,
       sources: selectedSources,
     });
     activeModel = result.model || activeModel;
-    latestResearchContext = {
-      query: trimmedQuery,
-      sources: selectedLabels,
-      classification: result.classification,
-      confidence: result.confidence,
-      summary: result.summary,
-      recommendations: result.recommendations,
-      evidenceMode: result.evidenceMode,
-    };
-
-    document.getElementById("classification").textContent = result.classification;
-    document.getElementById("confidence").textContent = result.confidence;
-    document.getElementById("summary").textContent = result.summary;
-    const recommendationList = document.getElementById("recommendation-list");
-    recommendationList.replaceChildren(
-      ...result.recommendations.map((text) => {
-        const item = document.createElement("li");
-        item.textContent = text;
-        return item;
-      }),
-    );
-
-    const resultState = result.classification === "Needs investigation" ? "empty" : "results";
-    setState(resultState);
-    if (resultState === "results") {
-      document.getElementById("state-message").textContent =
-        `Local-AI analysis of prototype evidence from ${sourceList} is ready for review.`;
-    }
-    setBrainStatus("ready", `Live — ${activeModel} through ${result.provider}`);
+    showResearchResult(result, trimmedQuery, selectedLabels, sourceList, false);
+    setBrainStatus("ready", `Live - ${activeModel} through ${result.provider}`);
   } catch (error) {
     setState("error");
     document.getElementById("state-title").textContent = "The local brain could not complete this request.";
@@ -297,6 +382,7 @@ function addChatMessage(sender, text) {
 }
 
 async function askEcho(question) {
+  if (demoMode === null) await brainCheckPromise;
   const trimmed = question.trim();
   if (!trimmed) return;
 
@@ -305,6 +391,16 @@ async function askEcho(question) {
   const pendingText = pendingMessage.querySelector("p");
 
   try {
+    if (demoMode) {
+      await new Promise((resolve) => window.setTimeout(resolve, 300));
+      const context = latestResearchContext;
+      pendingText.textContent = context
+        ? `Demo response: ${context.classification} (${context.confidence}). ${context.recommendations[0]} This is a simulated recommendation; verify it against approved live sources before acting.`
+        : "Demo response: Run a research example first, then I can explain the simulated classification and next step. No live company data is being queried.";
+      setBrainStatus("demo", "Simulated conversation - no live company data used");
+      return;
+    }
+
     setBrainStatus("thinking", `Answering with ${activeModel}...`);
     const result = await requestJson("/api/chat", {
       question: trimmed,
@@ -317,7 +413,7 @@ async function askEcho(question) {
     });
     activeModel = result.model || activeModel;
     pendingText.textContent = result.reply;
-    setBrainStatus("ready", `Live — ${activeModel} through ${result.provider}`);
+    setBrainStatus("ready", `Live - ${activeModel} through ${result.provider}`);
   } catch (error) {
     pendingText.textContent = `I could not reach the local AI: ${error.message}`;
     setBrainStatus("error", error.message);
@@ -364,4 +460,4 @@ renderCards("doc-results", docResults);
 renderCards("release-results", releaseResults);
 renderCards("momentum-results", momentumResults);
 setState("idle");
-void checkBrain();
+brainCheckPromise = checkBrain();

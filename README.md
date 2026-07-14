@@ -84,6 +84,14 @@ Optional environment settings:
 
 The model analyzes the prototype evidence shown in the interface. Jira, Confluence, Release Notes, and Momentum are not live-connected yet, and ECHO identifies the evidence as prototype data in its prompts and responses.
 
+## Online Demo
+
+[Open the public ECHO AI demo](https://traciepujol.github.io/Echo/).
+
+The public GitHub Pages version automatically switches to a clearly labeled simulation when the local Node/Ollama service is unavailable. It supports the research examples, source filters, Momentum no-ticket scenario, classifications, recommendations, and follow-up conversation without sending company data anywhere.
+
+The online experience is a product demonstration, not a live Jira, Confluence, Release Notes, Momentum, or AI-model integration. Run `npm start` from the T-drive workspace to demonstrate the live local `qwen2.5:3b` brain.
+
 ## Suggested MVP Architecture
 
 ### Frontend

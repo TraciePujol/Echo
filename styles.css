@@ -448,6 +448,24 @@ a:focus-visible {
   background: #fb7185;
 }
 
+.brain-status.is-demo {
+  border-color: rgba(167, 139, 250, 0.45);
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.brain-status.is-demo .brain-status-dot {
+  background: #a78bfa;
+}
+
+.demo-disclosure {
+  margin: -2px 0 0;
+  border-left: 3px solid #a78bfa;
+  padding: 8px 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 @keyframes brain-pulse {
   to {
     opacity: 0.35;
