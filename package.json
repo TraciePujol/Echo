@@ -1,0 +1,13 @@
+{
+  "name": "echo-ai-prototype",
+  "version": "0.2.0",
+  "private": true,
+  "description": "ECHO AI local research prototype powered by Ollama",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check app.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

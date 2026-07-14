@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ECHO AI</title>
+    <link rel="stylesheet" href="styles.css?v=local-brain-1" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-glow" aria-hidden="true"></div>
+      <div class="topbar-inner">
+        <div class="brand-row">
+          <img class="brand-symbol" src="assets/echo-logo.png" alt="" />
+          <div class="brand-text">
+            <img class="brand-logo" src="assets/echo-words.png" alt="ECHO AI" />
+            <span class="brand-subtitle">Enterprise Case & Historical Operations</span>
+          </div>
+        </div>
+
+        <nav aria-label="Primary">
+          <a href="#ticket-flow">Research Flow</a>
+          <a href="#research">Research</a>
+          <a href="#evidence">Evidence</a>
+          <a href="#sources">Sources</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section id="research" class="hero-panel">
+        <div class="hero-copy">
+          <div class="assistant-intro">
+            <div>
+              <span class="eyebrow">RESEARCH BEFORE ACTION</span>
+              <h2>Find the right path before creating or routing tickets.</h2>
+              <p>
+                Search Jira, Confluence, Release Notes, and Momentum operational logs
+                together so support teams can quickly find duplicates, known fixes,
+                workarounds, and proven low-risk actions before creating or routing work.
+              </p>
+            </div>
+          </div>
+
+          <div class="impact-row" aria-label="Research benefits">
+            <div>
+              <strong>Pre-check</strong>
+              <span>before new work</span>
+            </div>
+            <div>
+              <strong>4 sources</strong>
+              <span>searched together</span>
+            </div>
+            <div>
+              <strong>Better routing</strong>
+              <span>with historical context</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="research-form" class="research-form">
+          <div class="assistant-search-guide">
+            <img src="assets/echo-hero-v2.png" alt="ECHO AI assistant mascot" />
+            <div id="bot-speech" class="bot-speech">
+              Hello, I’m Echo.<br />
+              What are you investigating?
+            </div>
+          </div>
+
+          <div class="form-heading">
+            <label for="query">Ask Echo</label>
+              <span>Paste a draft ticket, Jira key, symptom, error, release question, or support request.</span>
+          </div>
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m20 20-3.6-3.6"></path>
+            </svg>
+            <textarea
+              id="query"
+              name="query"
+              rows="4"
+              placeholder="Ask Echo what you’re investigating..."
+            ></textarea>
+          </div>
+
+          <div class="quick-prompts" aria-label="Example research prompts">
+            <button type="button" data-query="Duplicate login timeout after latest release">Duplicate check</button>
+            <button type="button" data-query="Is payment authorization fixed in release 5.12.2?">Known fix</button>
+            <button type="button" data-query="Payment authorization workaround for saved cards after upgrade">Workaround</button>
+            <button type="button" data-query="Missing runbook for saved-card authorization error">Doc gap</button>
+            <button type="button" data-query="Incoming request HELP-4421: intermittent payment retry failures">Incoming request</button>
+            <button type="button" data-query="Momentum log shows this simple fix was completed without a ticket">No-ticket check</button>
+          </div>
+
+          <div class="source-row" id="sources" aria-label="Research sources">
+            <label><input type="checkbox" name="source" value="jira" checked /> <span>Jira</span></label>
+            <label><input type="checkbox" name="source" value="confluence" checked /> <span>Confluence</span></label>
+            <label><input type="checkbox" name="source" value="release" checked /> <span>Release Notes</span></label>
+            <label><input type="checkbox" name="source" value="momentum" checked /> <span>Momentum Logs</span></label>
+          </div>
+
+          <div id="brain-status" class="brain-status is-connecting" role="status" aria-live="polite">
+            <span class="brain-status-dot" aria-hidden="true"></span>
+            <strong>Local AI</strong>
+            <span id="brain-status-text">Connecting to the local brain...</span>
+          </div>
+
+          <button type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m12 3 1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6L12 3Z"></path>
+            </svg>
+            Ask Echo
+          </button>
+        </form>
+      </section>
+
+      <section id="ticket-flow" class="pre-ticket-panel">
+        <div class="section-heading state-heading">
+          <div class="icon-chip idea">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 12h6"></path>
+              <path d="M12 9v6"></path>
+              <path d="M4 4h16v16H4z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3>Research & Decision Support</h3>
+            <span>ECHO AI helps support teams research known history before creating, routing, or updating work.</span>
+          </div>
+        </div>
+        <div class="decision-grid">
+          <div>
+            <span class="decision-number">01</span>
+            <strong>Research before new work</strong>
+            <p>Paste a draft summary, symptoms, error text, version, or customer impact.</p>
+          </div>
+          <div>
+            <span class="decision-number">02</span>
+            <strong>Investigate incoming requests</strong>
+            <p>Use a Jira key or submitted ticket details to find related history and known fixes.</p>
+          </div>
+          <div>
+            <span class="decision-number">03</span>
+            <strong>Choose the next action</strong>
+            <p>Use the evidence to link existing work, apply a workaround, update docs, or escalate.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="state-panel" aria-label="Application states">
+        <div class="section-heading state-heading">
+          <div class="icon-chip secure">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
+          </div>
+          <div>
+            <h3>Assistant states</h3>
+            <span>How ECHO AI guides the user through each research outcome.</span>
+          </div>
+        </div>
+        <div class="state-controls" role="group" aria-label="Preview research state">
+          <button type="button" data-state="idle">Idle</button>
+          <button type="button" data-state="searching">Searching</button>
+          <button type="button" data-state="results" class="active">Results</button>
+          <button type="button" data-state="empty">No match</button>
+          <button type="button" data-state="permission">Permission</button>
+          <button type="button" data-state="error">Error</button>
+        </div>
+        <div id="state-preview" class="state-preview is-results">
+          <div class="state-visual" aria-hidden="true">
+            <img id="state-image" src="assets/echo-state-results.png" alt="" />
+          </div>
+          <div>
+            <span id="state-label" class="mini-label">RESULTS READY</span>
+            <h3 id="state-title">ECHO found related history.</h3>
+            <p id="state-message">
+              Similar Jira tickets, Confluence documentation, Release Notes, and Momentum operational history are ready for support review.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="evidence" class="summary-panel" aria-live="polite">
+        <div class="research-summary-banner">
+          This appears to be a known issue introduced after release 5.12 with related Jira history and release-note evidence.
+        </div>
+        <div class="summary-card classification-card">
+          <div class="icon-chip alert">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.3 3.9 2.5 18a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path>
+              <path d="M12 9v4"></path>
+              <path d="M12 17h.01"></path>
+            </svg>
+          </div>
+          <span class="eyebrow">Classification</span>
+          <h3 id="classification">Known issue</h3>
+          <div class="evidence-meter" aria-label="Evidence strength">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <p id="summary">
+            Similar Jira tickets and release notes suggest this behavior is a known
+            issue introduced after release 5.12.
+          </p>
+        </div>
+
+        <div class="summary-card confidence-card">
+          <div class="icon-chip secure">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
+          </div>
+          <span class="eyebrow">Confidence</span>
+          <strong id="confidence">82%</strong>
+          <p>Based on matching ticket history, documentation, and release-note evidence.</p>
+        </div>
+
+        <div class="summary-card recommendations">
+          <div class="icon-chip idea">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 18h6"></path>
+              <path d="M10 22h4"></path>
+              <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2Z"></path>
+            </svg>
+          </div>
+          <span class="eyebrow">Next steps</span>
+          <ul id="recommendation-list">
+            <li>Link the current issue to ECHO-1248.</li>
+            <li>Apply the workaround documented in release 5.12 notes.</li>
+            <li>Update the troubleshooting page with the saved-card symptom.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="appeal-strip" aria-label="User value">
+        <div>
+          <span class="mini-label">For help desk</span>
+          <strong>Know whether to resolve, route, or link.</strong>
+        </div>
+        <div>
+          <span class="mini-label">For analysts</span>
+          <strong>See prior decisions before opening or routing work.</strong>
+        </div>
+        <div>
+          <span class="mini-label">For writers</span>
+          <strong>Spot documentation gaps while evidence is fresh.</strong>
+        </div>
+      </section>
+
+      <section class="echo-chat-panel" aria-labelledby="echo-chat-title">
+        <div class="section-heading">
+          <div class="icon-chip docs">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 id="echo-chat-title">Follow-up Questions</h3>
+            <span>Ask Echo about the current research evidence.</span>
+          </div>
+        </div>
+
+        <div id="chat-messages" class="chat-messages" aria-live="polite">
+          <div class="chat-message echo">
+            <strong>Echo</strong>
+            <p>I can help explain the research results, compare related tickets, or summarize known fixes.</p>
+          </div>
+        </div>
+
+        <div class="chat-suggestions" aria-label="Suggested questions">
+          <button type="button" data-chat-prompt="Is this likely a duplicate?">Is this a duplicate?</button>
+          <button type="button" data-chat-prompt="What workaround should I try?">Workaround?</button>
+          <button type="button" data-chat-prompt="What release note is relevant?">Release note?</button>
+          <button type="button" data-chat-prompt="What should I do next?">Next step?</button>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+          <label class="visually-hidden" for="chat-input">Ask Echo a question</label>
+          <input
+            id="chat-input"
+            name="chat"
+            type="text"
+            placeholder="Ask a follow-up about the current research..."
+            autocomplete="off"
+          />
+          <button type="submit">Ask</button>
+        </form>
+      </section>
+
+      <section class="result-grid">
+        <article class="result-column" data-result-source="jira">
+          <div class="section-heading">
+            <div class="icon-chip jira">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 2v4"></path>
+                <path d="M16 2v4"></path>
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <path d="M8 12h.01"></path>
+                <path d="M12 12h.01"></path>
+                <path d="M16 12h.01"></path>
+                <path d="M8 16h.01"></path>
+                <path d="M12 16h.01"></path>
+              </svg>
+            </div>
+            <div>
+              <h3>Jira Tickets</h3>
+              <span>3 related matches</span>
+            </div>
+          </div>
+          <div id="jira-results" class="card-list"></div>
+        </article>
+
+        <article class="result-column" data-result-source="confluence">
+          <div class="section-heading">
+            <div class="icon-chip docs">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path>
+                <path d="M14 2v6h6"></path>
+                <path d="M8 13h8"></path>
+                <path d="M8 17h5"></path>
+              </svg>
+            </div>
+            <div>
+              <h3>Confluence Docs</h3>
+              <span>1 supporting page</span>
+            </div>
+          </div>
+          <div id="doc-results" class="card-list"></div>
+        </article>
+
+        <article class="result-column" data-result-source="release">
+          <div class="section-heading">
+            <div class="icon-chip release">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10 2v5a2 2 0 0 1-2 2H3"></path>
+                <path d="M3 8.5V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8l-6-6H5a2 2 0 0 0-2 2v4.5Z"></path>
+                <path d="m9 15 2 2 4-5"></path>
+              </svg>
+            </div>
+            <div>
+              <h3>Release Notes</h3>
+              <span>2 version references</span>
+            </div>
+          </div>
+          <div id="release-results" class="card-list"></div>
+        </article>
+
+        <article class="result-column" data-result-source="momentum">
+          <div class="section-heading">
+            <div class="icon-chip momentum">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v14H4z"></path>
+                <path d="M8 9h8"></path>
+                <path d="M8 13h5"></path>
+                <path d="m15 16 2 2 3-4"></path>
+              </svg>
+            </div>
+            <div>
+              <h3>Momentum Logs</h3>
+              <span>2 operational matches</span>
+            </div>
+          </div>
+          <div id="momentum-results" class="card-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="app.js?v=local-brain-1"></script>
+  </body>
+</html>
