@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ECHO AI</title>
-    <link rel="stylesheet" href="styles.css?v=local-brain-1" />
+    <link rel="stylesheet" href="styles.css?v=online-demo-1" />
   </head>
   <body>
     <header class="topbar">
@@ -102,9 +102,12 @@
 
           <div id="brain-status" class="brain-status is-connecting" role="status" aria-live="polite">
             <span class="brain-status-dot" aria-hidden="true"></span>
-            <strong>Local AI</strong>
+            <strong id="brain-status-label">Local AI</strong>
             <span id="brain-status-text">Connecting to the local brain...</span>
           </div>
+          <p id="demo-disclosure" class="demo-disclosure" hidden>
+            Public demo mode uses simulated evidence and responses. Run the T-drive version to use the live local AI model.
+          </p>
 
           <button type="submit">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -370,6 +373,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=local-brain-1"></script>
+    <script src="app.js?v=online-demo-1"></script>
   </body>
 </html>
